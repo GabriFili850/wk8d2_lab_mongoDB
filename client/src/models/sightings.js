@@ -10,6 +10,10 @@ Sightings.prototype.bindEvents = function () {
   PubSub.subscribe('SightingView:sighting-delete-clicked', (evt) => {
     this.deleteSighting(evt.detail);
   });
+
+  PubSub.subscribe('SightingView:sighting-submitted', (evt) => {
+    this.postSighting(evt.detail);
+  })
 };
 
 Sightings.prototype.getData = function () {
@@ -18,6 +22,15 @@ Sightings.prototype.getData = function () {
       PubSub.publish('Sightings:data-loaded', sightings);
     })
     .catch(console.error);
+};
+
+Sightings.prototype.postSighting = function (sighting) {
+  this.request.post(sighting)
+  .then((sightings) => {
+    PubSub.publish('Sightings:data-loaded', sightings)
+  })
+  .catch(console.error)
+
 };
 
 Sightings.prototype.deleteSighting = function (sightingId) {
